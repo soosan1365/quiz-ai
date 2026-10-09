@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# QuizAI — Interactive AI Learning Platform
+
+QuizAI is a responsive quiz application designed to help users learn and test their knowledge of Artificial Intelligence through interactive quizzes, instant feedback, and progress tracking.
+
+## Features
+
+* Multiple AI learning categories and difficulty levels
+* Multiple-choice questions with instant feedback and explanations
+* Quiz progress indicator
+* Results summary with score, percentage, and performance feedback
+* Review of incorrect answers
+* Retake quizzes with shuffled question order
+* Automatic saving and restoration of in-progress quizzes
+* Progress dashboard with score history and performance chart
+* Persistent progress using localStorage
+* Responsive user interface
+
+## Tech Stack
+
+* Next.js
+* React
+* TypeScript
+* Tailwind CSS
+* Recharts
+* Browser localStorage
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+* Node.js
+* npm
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone the repository:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```bash
+   git clone https://github.com/soosan1365/quiz-ai.git
+   ```
 
-## Learn More
+2. Navigate to the project directory:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   cd quiz-ai
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Install dependencies:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```bash
+   npm install
+   ```
 
-## Deploy on Vercel
+4. Start the development server:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   npm run dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+5. Open http://localhost:3000 in your browser.
+
+## Data Storage
+
+Quiz questions are stored locally in the project, while quiz attempts and in-progress sessions are saved in the browser using localStorage. No backend or external API is required.
+
+## Future Improvements
+
+* Add more quiz categories and questions
+* Add user authentication and cloud-based progress synchronization
+* Expand analytics and learning statistics
+
+## Author
+
+Developed as a portfolio project to demonstrate frontend development skills.
