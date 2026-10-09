@@ -2,7 +2,7 @@
 import { Suspense } from "react";
 import { getQuizById } from "@/lib/quiz";
 import { notFound } from "next/navigation";
-import QuizPlayer from "@/components/QuizPlayer";
+import QuizPlayer from "@/components/quiz/QuizPlayer";
 
 type Props = {
   params: Promise<{ id: string }>;
