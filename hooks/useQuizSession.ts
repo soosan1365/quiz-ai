@@ -73,33 +73,33 @@ export function useQuizSession(quiz: Quiz) {
 
       setSelectedAnswer(currentAnswer?.selectedAnswer ?? null);
       answeredRef.current = currentAnswer !== undefined;
- } else if (completedAttempt) {
-  const validAnswers = completedAttempt.answers.filter((answer) =>
-    quiz.questions.some((question) => question.id === answer.questionId),
-  );
+    } else if (completedAttempt) {
+      const validAnswers = completedAttempt.answers.filter((answer) =>
+        quiz.questions.some((question) => question.id === answer.questionId),
+      );
 
-  setQuestionOrder(
-    completedAttempt.questionOrder?.length === quiz.questions.length
-      ? completedAttempt.questionOrder
-      : quiz.questions.map((question) => question.id),
-  );
+      setQuestionOrder(
+        completedAttempt.questionOrder?.length === quiz.questions.length
+          ? completedAttempt.questionOrder
+          : quiz.questions.map((question) => question.id),
+      );
 
-  attemptIdRef.current = completedAttempt.id;
-  startedAtRef.current = completedAttempt.startedAt;
+      attemptIdRef.current = completedAttempt.id;
+      startedAtRef.current = completedAttempt.startedAt;
 
-  setAnswers(validAnswers);
-  setCurrentQuestionIndex(quiz.questions.length - 1);
-  setSelectedAnswer(null);
-  setIsFinished(true);
-  answeredRef.current = false;
-} else {
-  setQuestionOrder(
-    shuffleQuestions(quiz.questions.map((question) => question.id)),
-  );
-  attemptIdRef.current = crypto.randomUUID();
-  startedAtRef.current = new Date().toISOString();
-  answeredRef.current = false;
-}
+      setAnswers(validAnswers);
+      setCurrentQuestionIndex(quiz.questions.length - 1);
+      setSelectedAnswer(null);
+      setIsFinished(true);
+      answeredRef.current = false;
+    } else {
+      setQuestionOrder(
+        shuffleQuestions(quiz.questions.map((question) => question.id)),
+      );
+      attemptIdRef.current = crypto.randomUUID();
+      startedAtRef.current = new Date().toISOString();
+      answeredRef.current = false;
+    }
 
     setIsRestoring(false);
   }, [quiz]);

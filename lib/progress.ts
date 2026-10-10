@@ -2,15 +2,13 @@ import type { QuizAttempt } from "@/types/quiz";
 
 export function calculateQuizScore(attempt: QuizAttempt) {
   const correctCount = attempt.answers.filter(
-    (answer) => answer.isCorrect
+    (answer) => answer.isCorrect,
   ).length;
 
   const totalAnswered = attempt.answers.length;
 
   const percentage =
-    totalAnswered > 0
-      ? Math.round((correctCount / totalAnswered) * 100)
-      : 0;
+    totalAnswered > 0 ? Math.round((correctCount / totalAnswered) * 100) : 0;
 
   return {
     correctCount,
@@ -19,14 +17,11 @@ export function calculateQuizScore(attempt: QuizAttempt) {
   };
 }
 
-
-
 const STORAGE_KEY = "quiz-progress";
 
 function getActiveQuizKey(quizId: string): string {
-return `quiz-active-${quizId}`;
+  return `quiz-active-${quizId}`;
 }
-
 
 export function getQuizHistory(): QuizAttempt[] {
   if (typeof window === "undefined") {
@@ -53,14 +48,12 @@ export function getQuizHistory(): QuizAttempt[] {
         typeof item.id === "string" &&
         typeof item.quizId === "string" &&
         Array.isArray(item.answers) &&
-        (item.status === "completed" ||
-          item.status === "in-progress")
+        (item.status === "completed" || item.status === "in-progress"),
     );
   } catch {
     return [];
   }
 }
-
 
 export function saveQuizAttempt(attempt: QuizAttempt): void {
   try {
@@ -73,18 +66,13 @@ export function saveQuizAttempt(attempt: QuizAttempt): void {
 
     const updatedHistory = [...history, attempt];
 
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(updatedHistory)
-    );
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedHistory));
   } catch (error) {
     console.error("Failed to save quiz history:", error);
   }
 }
 
-export function saveInProgressAttempt(
-  attempt: QuizAttempt
-): void {
+export function saveInProgressAttempt(attempt: QuizAttempt): void {
   if (typeof window === "undefined") {
     return;
   }
@@ -92,103 +80,90 @@ export function saveInProgressAttempt(
   try {
     localStorage.setItem(
       getActiveQuizKey(attempt.quizId),
-      JSON.stringify(attempt)
+      JSON.stringify(attempt),
     );
   } catch (error) {
     console.error("Failed to save quiz progress:", error);
   }
 }
 
-export function getInProgressAttempt(
-quizId: string
-): QuizAttempt | null {
-if (typeof window === "undefined") {
-return null;
+export function getInProgressAttempt(quizId: string): QuizAttempt | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  try {
+    const saved = localStorage.getItem(getActiveQuizKey(quizId));
+
+    if (!saved) {
+      return null;
+    }
+
+    return JSON.parse(saved) as QuizAttempt;
+  } catch {
+    return null;
+  }
 }
 
-try {
-const saved = localStorage.getItem(
-getActiveQuizKey(quizId)
-);
+export function clearInProgressAttempt(quizId: string): void {
+  if (typeof window === "undefined") {
+    return;
+  }
 
-if (!saved) {
-  return null;
+  localStorage.removeItem(getActiveQuizKey(quizId));
 }
-
-return JSON.parse(saved) as QuizAttempt;
-
-
-} catch {
-return null;
-}
-}
-
-export function clearInProgressAttempt(
-quizId: string
-): void {
-if (typeof window === "undefined") {
-return;
-}
-
-localStorage.removeItem(getActiveQuizKey(quizId));
-}
-export function getLatestCompletedAttempt(
-  quizId: string
-): QuizAttempt | null {
+export function getLatestCompletedAttempt(quizId: string): QuizAttempt | null {
   const history = getQuizHistory();
 
   const completedAttempts = history
     .filter(
-      (attempt) =>
-        attempt.quizId === quizId &&
-        attempt.status === "completed"
+      (attempt) => attempt.quizId === quizId && attempt.status === "completed",
     )
     .sort(
       (a, b) =>
         new Date(b.completedAt ?? b.startedAt).getTime() -
-        new Date(a.completedAt ?? a.startedAt).getTime()
+        new Date(a.completedAt ?? a.startedAt).getTime(),
     );
 
   return completedAttempts[0] ?? null;
 }
 export function getCompletedQuizHistory(): QuizAttempt[] {
-  return getQuizHistory() 
+  return getQuizHistory()
     .filter((attempt) => attempt.status === "completed")
-    .sort( 
+    .sort(
       (a, b) =>
         new Date(b.completedAt ?? b.startedAt).getTime() -
         new Date(a.completedAt ?? a.startedAt).getTime(),
     );
 }
 
-
 export function getQuizChartData(history: QuizAttempt[]) {
   return [...history].reverse().map((attempt, index) => {
-    const { percentage } = calculateQuizScore(attempt); 
+    const { percentage } = calculateQuizScore(attempt);
 
     return {
-      attempt: `Attempt ${index + 1}`, 
-      percentage, 
+      attempt: `Attempt ${index + 1}`,
+      percentage,
     };
   });
 }
 
 export function getProgressStats(history: QuizAttempt[]) {
-  const scores = history.map( 
+  const scores = history.map(
     (attempt) => calculateQuizScore(attempt).percentage,
   );
 
   const averageScore =
     scores.length > 0
-      ? Math.round( 
+      ? Math.round(
           scores.reduce((sum, score) => sum + score, 0) / scores.length,
         )
       : null;
 
-  const latestScore = scores[0] ?? null; 
+  const latestScore = scores[0] ?? null;
 
   return {
-    averageScore, 
+    averageScore,
     latestScore,
   };
 }

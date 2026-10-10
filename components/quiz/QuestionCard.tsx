@@ -1,4 +1,3 @@
-
 type QuestionCardProps = {
   questionText: string;
   options: string[];

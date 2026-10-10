@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 
 export default function NotFound() {
@@ -42,8 +41,8 @@ export default function NotFound() {
         </h1>
 
         <p className="mx-auto mt-5 max-w-md leading-7 text-slate-500">
-          Looks like this page has gone missing. Don&apos;t worry,
-          your learning journey is still waiting for you.
+          Looks like this page has gone missing. Don&apos;t worry, your learning
+          journey is still waiting for you.
         </p>
 
         <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">

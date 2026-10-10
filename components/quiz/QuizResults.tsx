@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 import type { Quiz, AnswerRecord } from "@/types/quiz";
 
@@ -16,18 +15,16 @@ export default function QuizResults({
   onRetake,
 }: QuizResultsProps) {
   const correctCount = answers.filter((answer) => answer.isCorrect).length;
-  const percentage = Math.round(
-    (correctCount / quiz.questions.length) * 100,
-  );
+  const percentage = Math.round((correctCount / quiz.questions.length) * 100);
 
-const performanceMessage =
-  percentage === 100
-    ? "Perfect score! You've mastered every question. Keep up the amazing work!"
-    : percentage >= 80
-      ? "Excellent work! You have a strong understanding of this topic."
-      : percentage >= 60
-        ? "Good effort! A little more practice will help you improve."
-        : "Keep practicing! Review the explanations and try again.";
+  const performanceMessage =
+    percentage === 100
+      ? "Perfect score! You've mastered every question. Keep up the amazing work!"
+      : percentage >= 80
+        ? "Excellent work! You have a strong understanding of this topic."
+        : percentage >= 60
+          ? "Good effort! A little more practice will help you improve."
+          : "Keep practicing! Review the explanations and try again.";
 
   const missedAnswers = answers.filter((answer) => !answer.isCorrect);
 
@@ -41,9 +38,9 @@ const performanceMessage =
 
       <p className="mt-2">Percentage: {percentage}%</p>
 
- <p className="mt-3 text-slate-600 dark:text-slate-300">
-  {performanceMessage}
-</p>
+      <p className="mt-3 text-slate-600 dark:text-slate-300">
+        {performanceMessage}
+      </p>
 
       <div className="mt-8 text-left">
         <h2 className="mb-4 text-xl font-bold">Review Your Answers</h2>

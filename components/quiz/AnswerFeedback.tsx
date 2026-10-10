@@ -1,4 +1,3 @@
-
 type AnswerFeedbackProps = {
   isCorrect: boolean;
   explanation: string;

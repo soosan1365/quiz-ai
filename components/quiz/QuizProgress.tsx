@@ -1,4 +1,3 @@
-
 type QuizProgressProps = {
   currentQuestion: number;
   totalQuestions: number;
@@ -11,7 +10,6 @@ export default function QuizProgress({
   totalQuestions,
 }: QuizProgressProps) {
   const progress = (currentQuestion / totalQuestions) * 100;
-
   return (
     <>
       <p className="mb-4 text-sm text-gray-500">
