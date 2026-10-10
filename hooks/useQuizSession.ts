@@ -135,7 +135,6 @@ export function useQuizSession(quiz: Quiz) {
     }
 
     answeredRef.current = true;
-    answeredRef.current = true;
     setSelectedAnswer(index);
 
     setAnswers((previous) => {

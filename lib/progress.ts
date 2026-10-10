@@ -151,3 +151,44 @@ export function getLatestCompletedAttempt(
 
   return completedAttempts[0] ?? null;
 }
+export function getCompletedQuizHistory(): QuizAttempt[] {
+  return getQuizHistory() 
+    .filter((attempt) => attempt.status === "completed")
+    .sort( 
+      (a, b) =>
+        new Date(b.completedAt ?? b.startedAt).getTime() -
+        new Date(a.completedAt ?? a.startedAt).getTime(),
+    );
+}
+
+
+export function getQuizChartData(history: QuizAttempt[]) {
+  return [...history].reverse().map((attempt, index) => {
+    const { percentage } = calculateQuizScore(attempt); 
+
+    return {
+      attempt: `Attempt ${index + 1}`, 
+      percentage, 
+    };
+  });
+}
+
+export function getProgressStats(history: QuizAttempt[]) {
+  const scores = history.map( 
+    (attempt) => calculateQuizScore(attempt).percentage,
+  );
+
+  const averageScore =
+    scores.length > 0
+      ? Math.round( 
+          scores.reduce((sum, score) => sum + score, 0) / scores.length,
+        )
+      : null;
+
+  const latestScore = scores[0] ?? null; 
+
+  return {
+    averageScore, 
+    latestScore,
+  };
+}
