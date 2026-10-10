@@ -20,8 +20,10 @@ export default function QuizResults({
     (correctCount / quiz.questions.length) * 100,
   );
 
-  const performanceMessage =
-    percentage >= 80
+const performanceMessage =
+  percentage === 100
+    ? "Perfect score! You've mastered every question. Keep up the amazing work!"
+    : percentage >= 80
       ? "Excellent work! You have a strong understanding of this topic."
       : percentage >= 60
         ? "Good effort! A little more practice will help you improve."
@@ -39,9 +41,9 @@ export default function QuizResults({
 
       <p className="mt-2">Percentage: {percentage}%</p>
 
-      <p className="mt-3 text-slate-600 dark:text-slate-300">
-        {performanceMessage}
-      </p>
+ <p className="mt-3 text-slate-600 dark:text-slate-300">
+  {performanceMessage}
+</p>
 
       <div className="mt-8 text-left">
         <h2 className="mb-4 text-xl font-bold">Review Your Answers</h2>
@@ -101,8 +103,3 @@ export default function QuizResults({
     </main>
   );
 }
-// quiz: اطلاعات آزمون و سؤال‌ها
-
-// answers: پاسخ‌های ثبت‌شده‌ی کاربر
-
-// onRetake: تابعی که با کلیک روی Retake Quiz از کامپوننت والد دریافت می‌کنه

@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -9,6 +8,7 @@ import {
   saveInProgressAttempt,
   getInProgressAttempt,
   clearInProgressAttempt,
+  getLatestCompletedAttempt,
 } from "@/lib/progress";
 
 /**
@@ -30,8 +30,15 @@ export function useQuizSession(quiz: Quiz) {
 
   useEffect(() => {
     const savedAttempt = getInProgressAttempt(quiz.id);
-
-    if (savedAttempt?.status === "in-progress") {
+    const completedAttempt = getLatestCompletedAttempt(quiz.id);
+    if (
+      savedAttempt?.status === "in-progress" &&
+      (!completedAttempt ||
+        new Date(savedAttempt.startedAt).getTime() >
+          new Date(
+            completedAttempt.completedAt ?? completedAttempt.startedAt,
+          ).getTime())
+    ) {
       const savedOrder = savedAttempt.questionOrder;
 
       const questionIds = quiz.questions.map((question) => question.id);
@@ -66,14 +73,33 @@ export function useQuizSession(quiz: Quiz) {
 
       setSelectedAnswer(currentAnswer?.selectedAnswer ?? null);
       answeredRef.current = currentAnswer !== undefined;
-    } else {
-      setQuestionOrder(
-        shuffleQuestions(quiz.questions.map((question) => question.id)),
-      );
-      attemptIdRef.current = crypto.randomUUID();
-      startedAtRef.current = new Date().toISOString();
-      answeredRef.current = false;
-    }
+ } else if (completedAttempt) {
+  const validAnswers = completedAttempt.answers.filter((answer) =>
+    quiz.questions.some((question) => question.id === answer.questionId),
+  );
+
+  setQuestionOrder(
+    completedAttempt.questionOrder?.length === quiz.questions.length
+      ? completedAttempt.questionOrder
+      : quiz.questions.map((question) => question.id),
+  );
+
+  attemptIdRef.current = completedAttempt.id;
+  startedAtRef.current = completedAttempt.startedAt;
+
+  setAnswers(validAnswers);
+  setCurrentQuestionIndex(quiz.questions.length - 1);
+  setSelectedAnswer(null);
+  setIsFinished(true);
+  answeredRef.current = false;
+} else {
+  setQuestionOrder(
+    shuffleQuestions(quiz.questions.map((question) => question.id)),
+  );
+  attemptIdRef.current = crypto.randomUUID();
+  startedAtRef.current = new Date().toISOString();
+  answeredRef.current = false;
+}
 
     setIsRestoring(false);
   }, [quiz]);

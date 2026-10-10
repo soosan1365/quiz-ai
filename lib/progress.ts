@@ -132,3 +132,22 @@ return;
 
 localStorage.removeItem(getActiveQuizKey(quizId));
 }
+export function getLatestCompletedAttempt(
+  quizId: string
+): QuizAttempt | null {
+  const history = getQuizHistory();
+
+  const completedAttempts = history
+    .filter(
+      (attempt) =>
+        attempt.quizId === quizId &&
+        attempt.status === "completed"
+    )
+    .sort(
+      (a, b) =>
+        new Date(b.completedAt ?? b.startedAt).getTime() -
+        new Date(a.completedAt ?? a.startedAt).getTime()
+    );
+
+  return completedAttempts[0] ?? null;
+}

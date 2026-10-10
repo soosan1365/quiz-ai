@@ -81,7 +81,6 @@ export default function QuizPage({ params }: Props) {
 
 async function QuizContent({ params }: Props) {
   const { id } = await params;
-  // await new Promise((resolve) => setTimeout(resolve, 2000));
   const quiz = getQuizById(id);
 
   if (!quiz) {
