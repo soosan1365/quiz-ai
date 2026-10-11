@@ -1,21 +1,25 @@
-import { calculateQuizScore } from "@/lib/progress";
+
 import { quizzes } from "@/data/quizzes";
-import type { QuizAttempt } from "@/types/quiz";
+import type { QuizAttemptHistoryItem } from "@/services/quiz-history.service";
 
 type QuizHistoryProps = {
-  history: QuizAttempt[];
+  history: QuizAttemptHistoryItem[];
 };
-/**
- * Displays the user's completed quiz attempts and scores.
- */
+
 export default function QuizHistory({ history }: QuizHistoryProps) {
   return (
     <section>
-      {" "}
       <h2 className="mb-4 text-xl font-bold">Quiz history</h2>
+
       <div className="space-y-4">
         {history.map((attempt, index) => {
-          const { correctCount, percentage } = calculateQuizScore(attempt);
+          const score = attempt.score ?? 0;
+          const totalQuestions = attempt.totalQuestions ?? 0;
+
+          const percentage =
+            totalQuestions > 0
+              ? Math.round((score / totalQuestions) * 100)
+              : 0;
 
           const quizTitle =
             quizzes.find((quiz) => quiz.id === attempt.quizId)?.title ??
@@ -47,7 +51,7 @@ export default function QuizHistory({ history }: QuizHistoryProps) {
                   </p>
 
                   <p className="font-semibold">
-                    {correctCount} / {attempt.answers.length}
+                    {score} / {totalQuestions}
                   </p>
                 </div>
 

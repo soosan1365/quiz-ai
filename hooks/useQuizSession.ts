@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { Quiz, AnswerRecord } from "@/types/quiz";
 import { shuffleQuestions } from "@/lib/quiz-utils";
+import { useSaveQuizAttempt } from "@/queries/useSaveQuizAttempt";
 import {
   saveQuizAttempt,
   saveInProgressAttempt,
@@ -27,7 +28,7 @@ export function useQuizSession(quiz: Quiz) {
   const attemptIdRef = useRef("");
   const startedAtRef = useRef("");
   const answeredRef = useRef(false);
-
+  const saveAttemptMutation = useSaveQuizAttempt();
   useEffect(() => {
     const savedAttempt = getInProgressAttempt(quiz.id);
     const completedAttempt = getLatestCompletedAttempt(quiz.id);
@@ -157,19 +158,56 @@ export function useQuizSession(quiz: Quiz) {
     if (selectedAnswer === null) return;
 
     if (currentQuestionIndex === quiz.questions.length - 1) {
-      saveQuizAttempt({
+      const completedAt = new Date().toISOString();
+      const currentQuestionId = questionOrder[currentQuestionIndex];
+
+      const currentQuestion = quiz.questions.find(
+        (question) => question.id === currentQuestionId,
+      );
+
+      if (!currentQuestion) return;
+
+      const finalAnswers: AnswerRecord[] = [
+        ...answers.filter((answer) => answer.questionId !== currentQuestionId),
+        {
+          questionId: currentQuestionId,
+          selectedAnswer,
+          isCorrect: selectedAnswer === currentQuestion.correctAnswer,
+        },
+      ];
+
+      const completedAttempt = {
         id: attemptIdRef.current,
         quizId: quiz.id,
         startedAt: startedAtRef.current,
-        completedAt: new Date().toISOString(),
-        currentQuestionIndex,
-        answers,
-        status: "completed",
+        completedAt,
+        currentQuestionIndex: quiz.questions.length,
+        answers: finalAnswers,
+        status: "completed" as const,
+        questionOrder,
+      };
+
+      // اول نتیجه را در localStorage ذخیره می‌کنیم.
+      saveQuizAttempt(completedAttempt);
+
+      // آزمون فعال دیگر لازم نیست.
+      clearInProgressAttempt(quiz.id);
+
+      // وضعیت رابط کاربری را به‌روز می‌کنیم.
+      setAnswers(finalAnswers);
+      setIsFinished(true);
+
+      console.log("Submitting quiz attempt");
+      saveAttemptMutation.mutate({
+        quizId: quiz.id,
+        answers: finalAnswers.map((answer) => ({
+          questionId: answer.questionId,
+          selectedAnswer: answer.selectedAnswer,
+        })),
+        startedAt: startedAtRef.current,
         questionOrder,
       });
 
-      clearInProgressAttempt(quiz.id);
-      setIsFinished(true);
       return;
     }
 

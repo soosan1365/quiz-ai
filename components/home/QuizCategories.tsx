@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+import SignInModal from "@/components/auth/SignInModal";
 import Link from "next/link";
 import { quizzes } from "@/data/quizzes";
 const categories = [
@@ -31,7 +35,13 @@ const categories = [
   },
 ];
 
-export default function QuizCategories() {
+type Props = {
+  isLoggedIn: boolean;
+};
+
+export default function QuizCategories({ isLoggedIn }: Props) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedQuizUrl, setSelectedQuizUrl] = useState("/");
   return (
     <section
       id="categories"
@@ -56,12 +66,25 @@ export default function QuizCategories() {
               {category.questions} questions · {category.level}
             </p>
             {quizzes.some((quiz) => quiz.id === category.quizId) ? (
-              <Link
-                href={`/quiz/${category.quizId}`}
-                className="mt-6 inline-block font-medium text-violet-700 transition hover:text-violet-900"
-              >
-                Start quiz →
-              </Link>
+              isLoggedIn ? (
+                <Link
+                  href={`/quiz/${category.quizId}`}
+                  className="mt-6 inline-block font-medium text-violet-700 transition hover:text-violet-900"
+                >
+                  Start quiz →
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedQuizUrl(`/quiz/${category.quizId}`);
+                    setIsModalOpen(true);
+                  }}
+                  className="mt-6 inline-block font-medium text-violet-700 transition hover:text-violet-900"
+                >
+                  Start quiz →
+                </button>
+              )
             ) : (
               <span className="mt-6 inline-block text-sm text-slate-400">
                 Coming soon
@@ -70,6 +93,11 @@ export default function QuizCategories() {
           </article>
         ))}
       </div>
+      <SignInModal
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        quizUrl={selectedQuizUrl}
+      />
     </section>
   );
 }

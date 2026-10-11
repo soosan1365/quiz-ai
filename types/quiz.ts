@@ -29,4 +29,6 @@ export type QuizAttempt = {
   answers: AnswerRecord[];
   status: "in-progress" | "completed";
   questionOrder: string[];
+  score?: number;
+totalQuestions?: number;
 };

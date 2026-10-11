@@ -3,6 +3,8 @@ import { getQuizById } from "@/lib/quiz";
 import { notFound } from "next/navigation";
 import QuizPlayer from "@/components/quiz/QuizPlayer";
 import { LoaderCircle } from "lucide-react";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 type Props = {
   params: Promise<{ id: string }>;
 };
@@ -81,6 +83,12 @@ export default function QuizPage({ params }: Props) {
 
 async function QuizContent({ params }: Props) {
   const { id } = await params;
+
+  const session = await auth();
+
+  if (!session?.user) {
+    redirect(`/?callbackUrl=${encodeURIComponent(`/quiz/${id}`)}`);
+  }
   const quiz = getQuizById(id);
 
   if (!quiz) {
