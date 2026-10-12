@@ -155,7 +155,19 @@ export default function Navbar({ children }: NavbarProps) {
         {/* Mobile controls */}
         <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />
-
+   {user?.image ? (
+          <Image
+            src={user.image}
+            alt={user.name ?? "User profile"}
+            width={36}
+            height={36}
+            className="rounded-full border border-gray-200 object-cover dark:border-gray-700"
+          />
+        ) : (
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-violet-100 font-semibold text-violet-700 dark:bg-violet-900 dark:text-violet-200">
+            {user?.name?.charAt(0) ?? "U"}
+          </div>
+        )}
           <button
             type="button"
             onClick={() => {
